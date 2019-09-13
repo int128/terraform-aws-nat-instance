@@ -1,9 +1,13 @@
 resource "aws_security_group" "this" {
   name_prefix = var.name
   vpc_id      = var.vpc_id
+  description = "Security group for NAT instance ${var.name}"
+  tags = {
+    Name = "nat-instance-${var.name}"
+  }
 }
 
-resource "aws_security_group_rule" "this_egress" {
+resource "aws_security_group_rule" "egress" {
   security_group_id = aws_security_group.this.id
   type              = "egress"
   cidr_blocks       = ["0.0.0.0/0"]
@@ -12,7 +16,7 @@ resource "aws_security_group_rule" "this_egress" {
   protocol          = "tcp"
 }
 
-resource "aws_security_group_rule" "this_ingress" {
+resource "aws_security_group_rule" "ingress" {
   security_group_id = aws_security_group.this.id
   type              = "ingress"
   cidr_blocks       = var.private_subnets_cidr_blocks
@@ -21,15 +25,64 @@ resource "aws_security_group_rule" "this_ingress" {
   protocol          = "tcp"
 }
 
+resource "aws_security_group_rule" "ssh" {
+  count             = var.key_name == "" ? 0 : 1
+  security_group_id = aws_security_group.this.id
+  type              = "ingress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+}
+
+resource "aws_network_interface" "this" {
+  security_groups   = [aws_security_group.this.id]
+  subnet_id         = var.public_subnet
+  source_dest_check = false
+  description       = "ENI for NAT instance ${var.name}"
+  tags = {
+    Name = "nat-instance-${var.name}"
+  }
+}
+
+resource "aws_eip" "this" {
+  network_interface = aws_network_interface.this.id
+  tags = {
+    Name = "nat-instance-${var.name}"
+  }
+}
+
+resource "aws_route" "this" {
+  count                  = length(var.private_route_table_ids)
+  route_table_id         = var.private_route_table_ids[count.index]
+  destination_cidr_block = "0.0.0.0/0"
+  network_interface_id   = aws_network_interface.this.id
+}
+
 resource "aws_launch_template" "this" {
   name_prefix = var.name
   image_id    = var.image_id
+  key_name    = var.key_name
+
   iam_instance_profile {
     arn = aws_iam_instance_profile.this.arn
   }
+
   network_interfaces {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.this.id]
+    delete_on_termination       = true
+  }
+
+  user_data = base64encode(
+    templatefile("${path.module}/data/init.sh", {
+      eni_id = aws_network_interface.this.id
+    })
+  )
+
+  description = "Launch template for NAT instance ${var.name}"
+  tags = {
+    Name = "nat-instance-${var.name}"
   }
 }
 
@@ -38,7 +91,7 @@ resource "aws_autoscaling_group" "this" {
   desired_capacity    = 1
   min_size            = 1
   max_size            = 1
-  vpc_zone_identifier = var.public_subnets
+  vpc_zone_identifier = [var.public_subnet]
 
   mixed_instances_policy {
     instances_distribution {
@@ -56,6 +109,12 @@ resource "aws_autoscaling_group" "this" {
         }
       }
     }
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "nat-instance-${var.name}"
+    propagate_at_launch = true
   }
 
   lifecycle {
@@ -86,7 +145,26 @@ resource "aws_iam_role" "this" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "this_ssm" {
+resource "aws_iam_role_policy_attachment" "ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   role       = aws_iam_role.this.name
+}
+
+resource "aws_iam_role_policy" "eni" {
+  role        = aws_iam_role.this.name
+  name_prefix = var.name
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AttachNetworkInterface"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
 }
