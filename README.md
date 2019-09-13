@@ -2,6 +2,8 @@
 
 This is a Terraform module which provisions a NAT instance using an auto scaling group and spot request.
 
+![diagram](diagram.svg)
+
 
 ## How it works
 
