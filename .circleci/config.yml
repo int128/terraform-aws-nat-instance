@@ -5,11 +5,6 @@ jobs:
       - image: hashicorp/terraform:0.12.8
     steps:
       - checkout
+      - run: apk add make
       - run: terraform init
-      - run: terraform fmt -check=true -diff=true
-      - run: |
-          AWS_REGION=us-east-1 terraform validate \
-            -var name=nat \
-            -var vpc_id=vpc-XXXXXXXX \
-            -var public_subnet=subnet-XXXXXXXX \
-            -var private_subnets_cidr_blocks=172.18.0.0/20
+      - run: make check
