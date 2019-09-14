@@ -15,13 +15,12 @@ variable "private_subnets_cidr_blocks" {
 }
 
 variable "private_route_table_ids" {
-  default = []
+  description = "List of ID of the route tables for the private subnets. You set this to assign the each default route to the NAT instance"
+  default     = []
 }
 
 variable "image_id" {
   description = "AMI of the NAT instance"
-  # amzn-ami-vpc-nat-hvm-2018.03.0.20181116-x86_64-ebs
-  #default = "ami-0b840e8a1ce4cdf15"
   # Amazon Linux 2 AMI (HVM), SSD Volume Type
   default = "ami-04b762b4289fba92b"
 }
@@ -32,4 +31,6 @@ variable "instance_types" {
 }
 
 variable "key_name" {
+  description = "Name of the key pair for the NAT instance"
+  default     = ""
 }

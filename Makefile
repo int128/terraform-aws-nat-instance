@@ -6,3 +6,6 @@ check:
 		-var vpc_id=vpc-XXXXXXXX \
 		-var public_subnet=subnet-XXXXXXXX \
 		-var private_subnets_cidr_blocks=172.18.0.0/20
+
+README.md: variables.tf
+	terraform-docs md variables.tf >> README.md
