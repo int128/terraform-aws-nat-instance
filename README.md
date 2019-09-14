@@ -1,4 +1,4 @@
-# terraform-aws-nat-instance
+# terraform-aws-nat-instance [![CircleCI](https://circleci.com/gh/int128/terraform-aws-nat-instance.svg?style=shield)](https://circleci.com/gh/int128/terraform-aws-nat-instance)
 
 This is a Terraform module to provision a NAT instance for private subnet(s).
 It provides the following features:
