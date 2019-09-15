@@ -8,13 +8,6 @@ It provides the following features:
 - Fixed public IP address using an EIP and ENI
 - SSM session manager support
 
-Take a look at the diagram:
-
-![diagram](diagram.svg)
-
-Note that you should use a NAT gateway in general.
-This module is only for development or testing purpose.
-
 
 ## Getting Started
 
@@ -30,7 +23,7 @@ module "vpc" {
 }
 
 module "nat" {
-  source = "github.com/int128/terraform-aws-nat-instance"
+  source = "int128/nat-instance/aws"
 
   name                        = "hello-nat"
   vpc_id                      = module.vpc.vpc_id
@@ -45,6 +38,10 @@ module "nat" {
 
 
 ## How it works
+
+Take a look at the diagram:
+
+![diagram](diagram.svg)
 
 This module provisions the following resources:
 
@@ -72,11 +69,37 @@ See [init.sh](data/init.sh) for more.
 ## TODOs
 
 - [ ] Outputs
-- [ ] Variables descriptions
+- [x] Variables descriptions
 - [ ] CI
-- [ ] Parameters list in README.md
+- [x] Parameters list in README.md
 
 
 ## Contributions
 
 This is an open source software. Feel free to open issues and pull requests.
+
+
+//terraform-docs
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| image\_id | AMI of the NAT instance | string | `"ami-04b762b4289fba92b"` | no |
+| instance\_types | Candidates of instance type of the NAT instance | list | `<list>` | no |
+| key\_name | Name of the key pair for the NAT instance | string | `""` | no |
+| name | Name of this NAT instance | string | n/a | yes |
+| private\_route\_table\_ids | List of ID of the route tables for the private subnets. You set this to assign the each default route to the NAT instance | list | `<list>` | no |
+| private\_subnets\_cidr\_blocks | List of CIDR blocks of the private subnets | string | n/a | yes |
+| public\_subnet | ID of the public subnet for the NAT instance | string | n/a | yes |
+| vpc\_id | ID of the VPC | string | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| eip\_id | ID of the Elastic IP |
+| eip\_public\_ip | Public IP of the Elastic IP for the NAT instance |
+| eni\_id | ID of the ENI for the NAT instance |
+| iam\_role\_name | Name of the IAM role for the NAT instance |
+| sg\_id | ID of the security group of the NAT instance |
+
