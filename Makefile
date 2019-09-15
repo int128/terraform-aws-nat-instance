@@ -1,3 +1,5 @@
+all: check README.md
+
 .PHONY: check
 check:
 	terraform fmt -check=true -diff=true
@@ -7,5 +9,7 @@ check:
 		-var public_subnet=subnet-XXXXXXXX \
 		-var private_subnets_cidr_blocks=172.18.0.0/20
 
-README.md: variables.tf
-	terraform-docs md variables.tf >> README.md
+README.md: variables.tf outputs.tf
+	sed -e '/^\/\/terraform-docs/q' $@ > $@.tmp
+	terraform-docs md variables.tf outputs.tf >> $@.tmp
+	mv $@.tmp $@

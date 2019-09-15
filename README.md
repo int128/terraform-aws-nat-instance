@@ -79,6 +79,7 @@ See [init.sh](data/init.sh) for more.
 This is an open source software. Feel free to open issues and pull requests.
 
 
+//terraform-docs
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -91,4 +92,14 @@ This is an open source software. Feel free to open issues and pull requests.
 | private\_subnets\_cidr\_blocks | List of CIDR blocks of the private subnets | string | n/a | yes |
 | public\_subnet | ID of the public subnet for the NAT instance | string | n/a | yes |
 | vpc\_id | ID of the VPC | string | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| eip\_id | ID of the Elastic IP |
+| eip\_public\_ip | Public IP of the Elastic IP for the NAT instance |
+| eni\_id | ID of the ENI for the NAT instance |
+| iam\_role\_name | Name of the IAM role for the NAT instance |
+| sg\_id | ID of the security group of the NAT instance |
 
