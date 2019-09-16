@@ -10,6 +10,6 @@ check:
 		-var private_subnets_cidr_blocks=172.18.0.0/20
 
 README.md: variables.tf outputs.tf
-	sed -e '/^\/\/terraform-docs/q' $@ > $@.tmp
-	terraform-docs md variables.tf outputs.tf >> $@.tmp
+	sed -e '/^<!--terraform-docs-->/q' $@ > $@.tmp
+	terraform-docs --with-aggregate-type-defaults md variables.tf outputs.tf >> $@.tmp
 	mv $@.tmp $@

@@ -72,16 +72,16 @@ See [init.sh](data/init.sh) for details.
 This is an open source software. Feel free to open issues and pull requests.
 
 
-//terraform-docs
+<!--terraform-docs-->
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | image\_id | AMI of the NAT instance | string | `"ami-04b762b4289fba92b"` | no |
-| instance\_types | Candidates of instance type of the NAT instance | list | `<list>` | no |
+| instance\_types | Candidates of instance type of the NAT instance | list | `[ "t3.nano", "t3a.nano" ]` | no |
 | key\_name | Name of the key pair for the NAT instance | string | `""` | no |
 | name | Name of this NAT instance | string | n/a | yes |
-| private\_route\_table\_ids | List of ID of the route tables for the private subnets. You set this to assign the each default route to the NAT instance | list | `<list>` | no |
+| private\_route\_table\_ids | List of ID of the route tables for the private subnets. You set this to assign the each default route to the NAT instance | list | `[]` | no |
 | private\_subnets\_cidr\_blocks | List of CIDR blocks of the private subnets | string | n/a | yes |
 | public\_subnet | ID of the public subnet for the NAT instance | string | n/a | yes |
 | vpc\_id | ID of the VPC | string | n/a | yes |
