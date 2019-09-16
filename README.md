@@ -1,15 +1,21 @@
 # terraform-aws-nat-instance [![CircleCI](https://circleci.com/gh/int128/terraform-aws-nat-instance.svg?style=shield)](https://circleci.com/gh/int128/terraform-aws-nat-instance)
 
-This is a Terraform module to provision a NAT instance for private subnet(s).
-It provides the following features:
+This is a Terraform module which provisions a NAT instance.
 
-- Auto healing using the ASG
-- Lower cost using a spot instance
-- Fixed public IP address using an EIP and ENI
-- SSM session manager support
+Features:
+
+- Providing NAT for one or more private subnets
+- Auto healing by the Auto Scaling Group
+- Saving cost by spot requests
+- Fixed public IP address using an Elastic IP and Elastic Network Interface
+- Login with Systems Manager Session Manager
+
+Terraform 0.12 is required.
 
 
 ## Getting Started
+
+You can use this module with [terraform-aws-modules/vpc/aws](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws) module as follows:
 
 ```tf
 module "vpc" {
@@ -29,33 +35,28 @@ module "nat" {
   vpc_id                      = module.vpc.vpc_id
   public_subnet               = module.vpc.public_subnets[0]
   private_subnets_cidr_blocks = module.vpc.private_subnets_cidr_blocks
-
-  # (Optional)
-  # you can specify this to set the default route to the ENI in the route tables
-  private_route_table_ids = module.vpc.private_route_table_ids
+  private_route_table_ids     = module.vpc.private_route_table_ids
 }
 ```
 
 
 ## How it works
 
+This module will create the following resources:
+
+- Launch Template for the NAT instance
+- Auto Scaling Group with mixed instances policy
+- Elastic IP
+- Elastic Network Interface
+- Security Group for the NAT instance
+- IAM Role for SSM and ENI attachment
+- VPC Route (optional)
+
 Take a look at the diagram:
 
 ![diagram](diagram.svg)
 
-This module provisions the following resources:
-
-- Launch Template
-- Auto Scaling Group with miexed instances policy
-- Elastic IP
-- Elastic Network Interface
-- Security Group (allow from private subnets and to Internet)
-- IAM Role for SSM and ENI attachment
-- VPC Route (optional)
-
-The auto scaling group will create an instance.
-
-The instance does the following things on startup:
+The NAT instance will do the following tasks on startup:
 
 1. Attach the ENI to `eth1`.
 1. Enable IP forwarding.
@@ -63,15 +64,7 @@ The instance does the following things on startup:
 1. Enable IP masquerade.
 1. Switch the default route to `eth1`.
 
-See [init.sh](data/init.sh) for more.
-
-
-## TODOs
-
-- [ ] Outputs
-- [x] Variables descriptions
-- [ ] CI
-- [x] Parameters list in README.md
+See [init.sh](data/init.sh) for details.
 
 
 ## Contributions
