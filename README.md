@@ -40,6 +40,31 @@ module "nat" {
 ```
 
 
+### Extra configuration
+
+You can open SSH port to the NAT instance.
+
+```tf
+resource "aws_security_group_rule" "nat_ssh" {
+  security_group_id = module.nat.sg_id
+  type              = "ingress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+}
+```
+
+You can attach an extra policy to the IAM role of the NAT instance.
+
+```tf
+resource "aws_iam_role_policy_attachment" "nat_iam_example" {
+  policy_arn = "arn:aws:iam::aws:policy/SOME_POLICY_NAME"
+  role       = module.nat.iam_role_name
+}
+```
+
+
 ## How it works
 
 This module will create the following resources:
