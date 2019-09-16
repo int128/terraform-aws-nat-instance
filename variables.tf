@@ -20,9 +20,8 @@ variable "private_route_table_ids" {
 }
 
 variable "image_id" {
-  description = "AMI of the NAT instance"
-  # Amazon Linux 2 AMI (HVM), SSD Volume Type
-  default = "ami-04b762b4289fba92b"
+  description = "AMI of the NAT instance. Default to the latest Amazon Linux 2"
+  default     = ""
 }
 
 variable "instance_types" {

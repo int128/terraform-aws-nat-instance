@@ -77,7 +77,7 @@ This is an open source software. Feel free to open issues and pull requests.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| image\_id | AMI of the NAT instance | string | `"ami-04b762b4289fba92b"` | no |
+| image\_id | AMI of the NAT instance. Default to the latest Amazon Linux 2 | string | `""` | no |
 | instance\_types | Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy | list | `[ "t3.nano", "t3a.nano" ]` | no |
 | key\_name | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance | string | `""` | no |
 | name | Name for all the resources as identifier | string | n/a | yes |
