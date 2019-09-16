@@ -49,9 +49,35 @@ resource "aws_route" "this" {
   network_interface_id   = aws_network_interface.this.id
 }
 
+# AMI of the latest Amazon Linux 2 
+data "aws_ami" "this" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  filter {
+    name   = "block-device-mapping.volume-type"
+    values = ["gp2"]
+  }
+}
+
 resource "aws_launch_template" "this" {
   name_prefix = var.name
-  image_id    = var.image_id
+  image_id    = var.image_id != "" ? var.image_id : data.aws_ami.this.id
   key_name    = var.key_name
 
   iam_instance_profile {
