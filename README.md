@@ -102,6 +102,7 @@ This is an open source software. Feel free to open issues and pull requests.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| extra\_user\_data | Extra script to run in the NAT instance | string | `""` | no |
 | image\_id | AMI of the NAT instance. Default to the latest Amazon Linux 2 | string | `""` | no |
 | instance\_types | Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy | list | `[ "t3.nano", "t3a.nano" ]` | no |
 | key\_name | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance | string | `""` | no |
@@ -118,6 +119,7 @@ This is an open source software. Feel free to open issues and pull requests.
 | eip\_id | ID of the Elastic IP |
 | eip\_public\_ip | Public IP of the Elastic IP for the NAT instance |
 | eni\_id | ID of the ENI for the NAT instance |
+| eni\_private\_ip | Private IP of the ENI for the NAT instance |
 | iam\_role\_name | Name of the IAM role for the NAT instance |
 | sg\_id | ID of the security group of the NAT instance |
 

@@ -92,7 +92,8 @@ resource "aws_launch_template" "this" {
 
   user_data = base64encode(
     templatefile("${path.module}/data/init.sh", {
-      eni_id = aws_network_interface.this.id
+      eni_id          = aws_network_interface.this.id
+      extra_user_data = var.extra_user_data
     })
   )
 
