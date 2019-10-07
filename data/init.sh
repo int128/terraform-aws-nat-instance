@@ -18,3 +18,6 @@ iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 
 # Switch the default route to eth1
 ip route del default dev eth0
+
+# Run the extra script if set
+${extra_user_data}
