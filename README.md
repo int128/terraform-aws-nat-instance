@@ -69,7 +69,7 @@ See [init.sh](data/init.sh) for details.
 
 ## Configuration
 
-### Extra IAM policy
+### Set extra IAM policies
 
 You can attach an extra policy to the IAM role of the NAT instance. For example,
 
@@ -93,25 +93,40 @@ EOF
 }
 ```
 
-### Extra script
+### Run a script
 
-You can set an extra script to run in the NAT instance. For example,
+You can set an extra script to run in the NAT instance.
+The current region is exported as `AWS_DEFAULT_REGION` and you can use awscli without a region option.
+
+For example, you can expose port 8080 of the NAT instance using DNAT:
 
 ```tf
 module "nat" {
-  extra_user_data = <<EOF
-# ...
-EOF
+  extra_user_data = templatefile("${path.module}/data/nat-port-forward.sh", {
+    eni_private_ip = module.nat.eni_private_ip
+  })
 }
 ```
 
-The current region is exported as `AWS_DEFAULT_REGION` and you can use awscli without a region option.
+```sh
+# Look up the target instance
+tag_name="TARGET_TAG"
+target_private_ip="$(aws ec2 describe-instances --filters "Name=tag:Name,Values=$tag_name" | jq -r .Reservations[0].Instances[0].PrivateIpAddress)"
 
-### Open SSH port
+# Expose the port of the NAT instance.
+iptables -t nat -A PREROUTING -m tcp -p tcp --dst "${eni_private_ip}" --dport 8080 -j DNAT --to-destination "$target_private_ip:8080"
+```
 
-You can open the SSH port to the NAT instance.
+
+### Allow SSH access
+
+For example,
 
 ```tf
+module "nat" {
+  key_name = "YOUR_KEY_PAIR"
+}
+
 resource "aws_security_group_rule" "nat_ssh" {
   security_group_id = module.nat.sg_id
   type              = "ingress"
