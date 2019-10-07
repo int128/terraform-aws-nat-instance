@@ -21,5 +21,11 @@ iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 # Switch the default route to eth1
 ip route del default dev eth0
 
+# Waiting for network connection
+curl --retry 10 http://www.example.com
+
+# Restart the SSM agent
+systemctl restart amazon-ssm-agent.service
+
 # Run the extra script if set
 ${extra_user_data}
