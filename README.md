@@ -40,31 +40,6 @@ module "nat" {
 ```
 
 
-### Extra configuration
-
-You can open SSH port to the NAT instance.
-
-```tf
-resource "aws_security_group_rule" "nat_ssh" {
-  security_group_id = module.nat.sg_id
-  type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-}
-```
-
-You can attach an extra policy to the IAM role of the NAT instance.
-
-```tf
-resource "aws_iam_role_policy_attachment" "nat_iam_example" {
-  policy_arn = "arn:aws:iam::aws:policy/SOME_POLICY_NAME"
-  role       = module.nat.iam_role_name
-}
-```
-
-
 ## How it works
 
 This module will create the following resources:
@@ -90,6 +65,60 @@ The NAT instance will do the following tasks on startup:
 1. Switch the default route to `eth1`.
 
 See [init.sh](data/init.sh) for details.
+
+
+## Configuration
+
+### Extra IAM policy
+
+You can attach an extra policy to the IAM role of the NAT instance. For example,
+
+```tf
+resource "aws_iam_role_policy" "nat_iam_ec2" {
+  role = module.nat.iam_role_name
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+```
+
+### Extra script
+
+You can set an extra script to run in the NAT instance. For example,
+
+```tf
+module "nat" {
+  extra_user_data = <<EOF
+# ...
+EOF
+}
+```
+
+### Open SSH port
+
+You can open the SSH port to the NAT instance.
+
+```tf
+resource "aws_security_group_rule" "nat_ssh" {
+  security_group_id = module.nat.sg_id
+  type              = "ingress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+}
+```
 
 
 ## Contributions
