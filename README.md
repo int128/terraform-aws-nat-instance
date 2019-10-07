@@ -105,6 +105,8 @@ EOF
 }
 ```
 
+The current region is exported as `AWS_DEFAULT_REGION` and you can use awscli without a region option.
+
 ### Open SSH port
 
 You can open the SSH port to the NAT instance.
