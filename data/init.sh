@@ -1,9 +1,11 @@
 #!/bin/bash -x
 
+# Determine the region
+export AWS_DEFAULT_REGION="$(/opt/aws/bin/ec2-metadata -z | sed 's/placement: \(.*\).$/\1/')"
+
 # Attach the ENI
-region="$(/opt/aws/bin/ec2-metadata -z | sed 's/placement: \(.*\).$/\1/')"
 instance_id="$(/opt/aws/bin/ec2-metadata -i | cut -d' ' -f2)"
-aws --region "$region" ec2 attach-network-interface \
+aws ec2 attach-network-interface \
     --instance-id "$instance_id" \
     --device-index 1 \
     --network-interface-id "${eni_id}"
