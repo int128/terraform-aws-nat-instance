@@ -4,13 +4,15 @@ This is a Terraform module which provisions a NAT instance.
 
 Features:
 
-- Providing NAT for one or more private subnets
-- Auto healing by the Auto Scaling Group
-- Saving cost by spot requests
-- Fixed public IP address using an Elastic IP and Elastic Network Interface
-- Login with Systems Manager Session Manager
+- Providing NAT for private subnet(s)
+- Auto healing using an auto scaling group
+- Saving cost using a spot instance
+- Fixed source IP address by reattaching ENI
+- Supporting Systems Manager Session Manager
 
 Terraform 0.12 is required.
+
+**Warning**: Generally you should use a NAT gateway. This module provides a very low cost solution for testing purpose.
 
 
 ## Getting Started
@@ -40,18 +42,19 @@ module "nat" {
 }
 ```
 
-You can log in to the NAT instance via [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html).
+Now create an EC2 instance in the private subnet to verify the NAT configuration.
+Open the [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html), log in to the instance and make sure you have external access from the instance.
 
 
 ## How it works
 
 This module provisions the following resources:
 
-- Launch Template for the NAT instance
 - Auto Scaling Group with mixed instances policy
+- Launch Template
 - Elastic IP
 - Elastic Network Interface
-- Security Group for the NAT instance
+- Security Group
 - IAM Role for SSM and ENI attachment
 - VPC Route (optional)
 
@@ -120,7 +123,9 @@ iptables -t nat -A PREROUTING -m tcp -p tcp --dst "${eni_private_ip}" --dport 80
 
 ### Allow SSH access
 
-For example,
+You can log in to the NAT instance from [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html).
+
+You can enable SSH access by setting `key_name` option and opening the security group. For example,
 
 ```tf
 module "nat" {
