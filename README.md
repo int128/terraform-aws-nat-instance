@@ -21,7 +21,7 @@ You can use this module with [terraform-aws-modules/vpc/aws](https://registry.te
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
 
-  name                 = "hello-vpc"
+  name                 = "main"
   cidr                 = "172.18.0.0/16"
   azs                  = ["us-west-2a", "us-west-2b", "us-west-2c"]
   private_subnets      = ["172.18.64.0/20", "172.18.80.0/20", "172.18.96.0/20"]
@@ -32,7 +32,7 @@ module "vpc" {
 module "nat" {
   source = "int128/nat-instance/aws"
 
-  name                        = "hello-nat"
+  name                        = "main"
   vpc_id                      = module.vpc.vpc_id
   public_subnet               = module.vpc.public_subnets[0]
   private_subnets_cidr_blocks = module.vpc.private_subnets_cidr_blocks
@@ -43,7 +43,7 @@ module "nat" {
 
 ## How it works
 
-This module will create the following resources:
+This module provisions the following resources:
 
 - Launch Template for the NAT instance
 - Auto Scaling Group with mixed instances policy
@@ -57,15 +57,12 @@ Take a look at the diagram:
 
 ![diagram](diagram.svg)
 
-The NAT instance will do the following tasks on startup:
+By default an instance of the latest Amazon Linux 2 is launched.
+The instance will run [init.sh](data/init.sh) to enable NAT as follows:
 
 1. Attach the ENI to `eth1`.
-1. Enable IP forwarding.
-1. Set to ignore ICMP redirect packets.
-1. Enable IP masquerade.
+1. Set the kernel parameters for IP forwarding and masquerade.
 1. Switch the default route to `eth1`.
-
-See [init.sh](data/init.sh) for details.
 
 
 ## Configuration
