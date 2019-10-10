@@ -40,6 +40,8 @@ module "nat" {
 }
 ```
 
+You can log in to the NAT instance via [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html).
+
 
 ## How it works
 
