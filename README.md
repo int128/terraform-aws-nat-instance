@@ -23,6 +23,7 @@ module "vpc" {
 
   name                 = "hello-vpc"
   cidr                 = "172.18.0.0/16"
+  azs                  = ["us-west-2a", "us-west-2b", "us-west-2c"]
   private_subnets      = ["172.18.64.0/20", "172.18.80.0/20", "172.18.96.0/20"]
   public_subnets       = ["172.18.128.0/20", "172.18.144.0/20", "172.18.160.0/20"]
   enable_dns_hostnames = true
