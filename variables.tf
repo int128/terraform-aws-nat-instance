@@ -34,6 +34,11 @@ variable "instance_types" {
   default     = ["t3.nano", "t3a.nano"]
 }
 
+variable "use_spot_instance" {
+  description = "Whether to use spot or on-demand EC2 instance"
+  default     = true
+}
+
 variable "key_name" {
   description = "Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance"
   default     = ""

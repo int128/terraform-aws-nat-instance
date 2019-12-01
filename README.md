@@ -155,7 +155,8 @@ This is an open source software. Feel free to open issues and pull requests.
 |------|-------------|:----:|:-----:|:-----:|
 | extra\_user\_data | Extra script to run in the NAT instance | string | `""` | no |
 | image\_id | AMI of the NAT instance. Default to the latest Amazon Linux 2 | string | `""` | no |
-| instance\_types | Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy | list | `[ "t3.nano", "t3a.nano" ]` | no |
+| instance\_types | Candidates of instance type for the NAT instance. This is used in the mixed instances policy | list | `[ "t3.nano", "t3a.nano" ]` | no |
+| use_spot_instance | Whether to use spot or on-demand EC2 instance | boolean | true | no |
 | key\_name | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance | string | `""` | no |
 | name | Name for all the resources as identifier | string | n/a | yes |
 | private\_route\_table\_ids | List of ID of the route tables for the private subnets. You can set this to assign the each default route to the NAT instance | list | `[]` | no |
