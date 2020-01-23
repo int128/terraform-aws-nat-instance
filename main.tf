@@ -36,6 +36,7 @@ resource "aws_network_interface" "this" {
 }
 
 resource "aws_eip" "this" {
+  count             = var.enabled ? 1 : 0
   network_interface = aws_network_interface.this.id
   tags = {
     Name = "nat-instance-${var.name}"
@@ -105,8 +106,8 @@ resource "aws_launch_template" "this" {
 
 resource "aws_autoscaling_group" "this" {
   name_prefix         = var.name
-  desired_capacity    = 1
-  min_size            = 1
+  desired_capacity    = var.enabled ? 1 : 0
+  min_size            = var.enabled ? 1 : 0
   max_size            = 1
   vpc_zone_identifier = [var.public_subnet]
 

@@ -1,3 +1,7 @@
+variable "enabled" {
+  description = "Enable or not costly resources"
+  default     = true
+}
 variable "name" {
   description = "Name for all the resources as identifier"
 }

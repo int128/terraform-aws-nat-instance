@@ -9,6 +9,7 @@ Features:
 - Saving cost using a spot instance (from $1/month)
 - Fixed source IP address by reattaching ENI
 - Supporting Systems Manager Session Manager
+- Disable costly resources for compatibility with workspaces
 
 Terraform 0.12 is required.
 
@@ -153,6 +154,7 @@ This is an open source software. Feel free to open issues and pull requests.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| enabled | Enable or disable costly resources| boolean | `true` | no |
 | extra\_user\_data | Extra script to run in the NAT instance | string | `""` | no |
 | image\_id | AMI of the NAT instance. Default to the latest Amazon Linux 2 | string | `""` | no |
 | instance\_types | Candidates of instance type for the NAT instance. This is used in the mixed instances policy | list | `[ "t3.nano", "t3a.nano" ]` | no |
@@ -165,6 +167,8 @@ This is an open source software. Feel free to open issues and pull requests.
 | vpc\_id | ID of the VPC | string | n/a | yes |
 
 ## Outputs
+
+Outputs are empty string for disabled costly resources.
 
 | Name | Description |
 |------|-------------|
