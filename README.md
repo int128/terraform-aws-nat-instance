@@ -165,6 +165,7 @@ This is an open source software. Feel free to open issues and pull requests.
 | private\_subnets\_cidr\_blocks | List of CIDR blocks of the private subnets. The NAT instance accepts connections from this subnets | string | n/a | yes |
 | public\_subnet | ID of the public subnet to place the NAT instance | string | n/a | yes |
 | vpc\_id | ID of the VPC | string | n/a | yes |
+| tags | Tags to be applied to resources | map(string) | {} | no |
 
 ## Outputs
 
