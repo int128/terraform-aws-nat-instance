@@ -2,9 +2,7 @@ resource "aws_security_group" "this" {
   name_prefix = var.name
   vpc_id      = var.vpc_id
   description = "Security group for NAT instance ${var.name}"
-  tags = {
-    Name = "nat-instance-${var.name}"
-  }
+  tags        = local.common_tags
 }
 
 resource "aws_security_group_rule" "egress" {
@@ -30,17 +28,13 @@ resource "aws_network_interface" "this" {
   subnet_id         = var.public_subnet
   source_dest_check = false
   description       = "ENI for NAT instance ${var.name}"
-  tags = {
-    Name = "nat-instance-${var.name}"
-  }
+  tags              = local.common_tags
 }
 
 resource "aws_eip" "this" {
   count             = var.enabled ? 1 : 0
   network_interface = aws_network_interface.this.id
-  tags = {
-    Name = "nat-instance-${var.name}"
-  }
+  tags              = local.common_tags
 }
 
 resource "aws_route" "this" {
@@ -130,11 +124,7 @@ resource "aws_autoscaling_group" "this" {
     }
   }
 
-  tag {
-    key                 = "Name"
-    value               = "nat-instance-${var.name}"
-    propagate_at_launch = true
-  }
+  tags = local.asg_tags
 
   lifecycle {
     create_before_destroy = true

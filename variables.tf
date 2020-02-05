@@ -47,3 +47,32 @@ variable "key_name" {
   description = "Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance"
   default     = ""
 }
+
+variable "tags" {
+  description = "Tags applied to resources created with this module"
+  default     = {}
+}
+
+locals {
+  // Generate common tags by merging variables and default Name
+  common_tags = merge(
+    var.tags, {
+      Name = "nat-instance-${var.name}"
+  })
+
+  // Generate asg tags by merging variables in object format
+  asg_tags = concat([
+    for key, value in var.tags : {
+      key                 = key
+      value               = value
+      propagate_at_launch = true
+    }
+    ], [
+    {
+      key                 = "Name"
+      value               = "nat-instance-${var.name}"
+      propagate_at_launch = true
+    }
+    ]
+  )
+}
