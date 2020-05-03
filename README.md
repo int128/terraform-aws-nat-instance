@@ -150,26 +150,34 @@ This is an open source software. Feel free to open issues and pull requests.
 
 
 <!--terraform-docs-->
+## Requirements
+
+No requirements.
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| enabled | Enable or disable costly resources| boolean | `true` | no |
-| extra\_user\_data | Extra script to run in the NAT instance | string | `""` | no |
-| image\_id | AMI of the NAT instance. Default to the latest Amazon Linux 2 | string | `""` | no |
-| instance\_types | Candidates of instance type for the NAT instance. This is used in the mixed instances policy | list | `[ "t3.nano", "t3a.nano" ]` | no |
-| use_spot_instance | Whether to use spot or on-demand EC2 instance | boolean | true | no |
-| key\_name | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance | string | `""` | no |
-| name | Name for all the resources as identifier | string | n/a | yes |
-| private\_route\_table\_ids | List of ID of the route tables for the private subnets. You can set this to assign the each default route to the NAT instance | list | `[]` | no |
-| private\_subnets\_cidr\_blocks | List of CIDR blocks of the private subnets. The NAT instance accepts connections from this subnets | string | n/a | yes |
-| public\_subnet | ID of the public subnet to place the NAT instance | string | n/a | yes |
-| vpc\_id | ID of the VPC | string | n/a | yes |
-| tags | Tags to be applied to resources | map(string) | {} | no |
+|------|-------------|------|---------|:--------:|
+| enabled | Enable or not costly resources | `bool` | `true` | no |
+| extra\_user\_data | Extra script to run in the NAT instance | `string` | `""` | no |
+| image\_id | AMI of the NAT instance. Default to the latest Amazon Linux 2 | `string` | `""` | no |
+| instance\_types | Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy | `list` | <pre>[<br>  "t3.nano",<br>  "t3a.nano"<br>]</pre> | no |
+| key\_name | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance | `string` | `""` | no |
+| name | Name for all the resources as identifier | `any` | n/a | yes |
+| private\_route\_table\_ids | List of ID of the route tables for the private subnets. You can set this to assign the each default route to the NAT instance | `list` | `[]` | no |
+| private\_subnets\_cidr\_blocks | List of CIDR blocks of the private subnets. The NAT instance accepts connections from this subnets | `any` | n/a | yes |
+| public\_subnet | ID of the public subnet to place the NAT instance | `any` | n/a | yes |
+| tags | Tags applied to resources created with this module | `map` | `{}` | no |
+| use\_spot\_instance | Whether to use spot or on-demand EC2 instance | `bool` | `true` | no |
+| vpc\_id | ID of the VPC | `any` | n/a | yes |
 
 ## Outputs
-
-Outputs are empty string for disabled costly resources.
 
 | Name | Description |
 |------|-------------|
