@@ -7,5 +7,5 @@ check:
 
 README.md: variables.tf outputs.tf
 	sed -e '/^<!--terraform-docs-->/q' $@ > $@.tmp
-	terraform-docs --with-aggregate-type-defaults md variables.tf outputs.tf >> $@.tmp
+	terraform-docs md . >> $@.tmp
 	mv $@.tmp $@
