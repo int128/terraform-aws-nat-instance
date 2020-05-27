@@ -99,11 +99,12 @@ resource "aws_launch_template" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  name_prefix         = var.name
-  desired_capacity    = var.enabled ? 1 : 0
-  min_size            = var.enabled ? 1 : 0
-  max_size            = 1
-  vpc_zone_identifier = [var.public_subnet]
+  name_prefix      = var.name
+  desired_capacity = var.enabled ? 1 : 0
+  min_size         = var.enabled ? 1 : 0
+  max_size         = 1
+  vpc_zone_identifier = [
+  var.public_subnet]
 
   mixed_instances_policy {
     instances_distribution {
@@ -124,7 +125,25 @@ resource "aws_autoscaling_group" "this" {
     }
   }
 
-  tags = local.asg_tags
+
+  // Generate asg tags from default tag list
+
+  dynamic "tag" {
+    for_each = var.tags
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
+
+  // Tag for name
+  tag {
+    key                 = "Name"
+    value               = "nat-instance-${var.name}"
+    propagate_at_launch = true
+  }
+
 
   lifecycle {
     create_before_destroy = true

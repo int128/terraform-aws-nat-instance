@@ -72,20 +72,4 @@ locals {
     var.tags, {
       Name = "nat-instance-${var.name}"
   })
-
-  // Generate asg tags by merging variables in object format
-  asg_tags = concat([
-    for key, value in var.tags : {
-      key                 = key
-      value               = value
-      propagate_at_launch = true
-    }
-    ], [
-    {
-      key                 = "Name"
-      value               = "nat-instance-${var.name}"
-      propagate_at_launch = true
-    }
-    ]
-  )
 }
