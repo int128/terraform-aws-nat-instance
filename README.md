@@ -46,6 +46,8 @@ module "nat" {
 Now create an EC2 instance in the private subnet to verify the NAT configuration.
 Open the [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html), log in to the instance and make sure you have external access from the instance.
 
+See also the [example](example/).
+
 
 ## How it works
 
