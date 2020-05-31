@@ -75,55 +75,6 @@ The instance will run [init.sh](data/init.sh) to enable NAT as follows:
 
 ## Configuration
 
-### Set extra IAM policies
-
-You can attach an extra policy to the IAM role of the NAT instance. For example,
-
-```tf
-resource "aws_iam_role_policy" "nat_iam_ec2" {
-  role = module.nat.iam_role_name
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:DescribeInstances"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
-}
-```
-
-### Run a script
-
-You can set an extra script to run in the NAT instance.
-The current region is exported as `AWS_DEFAULT_REGION` and you can use awscli without a region option.
-
-For example, you can expose port 8080 of the NAT instance using DNAT:
-
-```tf
-module "nat" {
-  extra_user_data = templatefile("${path.module}/data/nat-port-forward.sh", {
-    eni_private_ip = module.nat.eni_private_ip
-  })
-}
-```
-
-```sh
-# Look up the target instance
-tag_name="TARGET_TAG"
-target_private_ip="$(aws ec2 describe-instances --filters "Name=tag:Name,Values=$tag_name" | jq -r .Reservations[0].Instances[0].PrivateIpAddress)"
-
-# Expose the port of the NAT instance.
-iptables -t nat -A PREROUTING -m tcp -p tcp --dst "${eni_private_ip}" --dport 8080 -j DNAT --to-destination "$target_private_ip:8080"
-```
-
-
 ### Allow SSH access
 
 You can log in to the NAT instance from [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html).
@@ -167,7 +118,6 @@ No requirements.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | enabled | Enable or not costly resources | `bool` | `true` | no |
-| extra\_user\_data | Extra script to run in the NAT instance | `string` | `""` | no |
 | image\_id | AMI of the NAT instance. Default to the latest Amazon Linux 2 | `string` | `""` | no |
 | instance\_types | Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy | `list` | <pre>[<br>  "t3.nano",<br>  "t3a.nano"<br>]</pre> | no |
 | key\_name | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance | `string` | `""` | no |

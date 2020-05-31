@@ -30,12 +30,6 @@ variable "private_route_table_ids" {
   default     = []
 }
 
-variable "extra_user_data" {
-  description = "Extra script to run in the NAT instance"
-  type        = string
-  default     = ""
-}
-
 variable "image_id" {
   description = "AMI of the NAT instance. Default to the latest Amazon Linux 2"
   type        = string

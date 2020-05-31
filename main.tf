@@ -85,12 +85,31 @@ resource "aws_launch_template" "this" {
     delete_on_termination       = true
   }
 
-  user_data = base64encode(
-    templatefile("${path.module}/data/init.sh", {
-      eni_id          = aws_network_interface.this.id
-      extra_user_data = var.extra_user_data
+  user_data = base64encode(join("\n", [
+    "#cloud-config",
+    yamlencode({
+      # https://cloudinit.readthedocs.io/en/latest/topics/modules.html
+      write_files : [
+        {
+          path : "/opt/nat/runonce.sh",
+          content : templatefile("${path.module}/runonce.sh", { eni_id = aws_network_interface.this.id }),
+          permissions : "0755",
+        },
+        {
+          path : "/opt/nat/snat.sh",
+          content : file("${path.module}/snat.sh"),
+          permissions : "0755",
+        },
+        {
+          path : "/etc/systemd/system/snat.service",
+          content : file("${path.module}/snat.service"),
+        },
+      ],
+      runcmd : [
+        ["/opt/nat/runonce.sh"],
+      ],
     })
-  )
+  ]))
 
   description = "Launch template for NAT instance ${var.name}"
   tags = {
