@@ -9,7 +9,7 @@ Features:
 - Saving cost using a spot instance (from $1/month)
 - Fixed source IP address by reattaching ENI
 - Supporting Systems Manager Session Manager
-- Disable costly resources for compatibility with workspaces
+- Compatible with workspaces
 
 Terraform 0.12 is required.
 
@@ -65,8 +65,10 @@ Take a look at the diagram:
 
 ![diagram](diagram.svg)
 
-By default an instance of the latest Amazon Linux 2 is launched.
-The instance will run [init.sh](data/init.sh) to enable NAT as follows:
+By default the latest Amazon Linux 2 image is used.
+You can set `image_id` for a custom image.
+
+The instance will execute [`runonce.sh`](runonce.sh) and [`snat.sh`](snat.sh) to enable NAT as follows:
 
 1. Attach the ENI to `eth1`.
 1. Set the kernel parameters for IP forwarding and masquerade.
@@ -94,7 +96,7 @@ module "nat" {
 }
 ```
 
-See also the [example](example/) for more.
+See also [cloud-init modules](https://cloudinit.readthedocs.io/en/latest/topics/modules.html) and the [example](example/) for more.
 
 
 ### SSH access
