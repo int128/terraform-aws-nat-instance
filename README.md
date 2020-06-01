@@ -75,9 +75,29 @@ The instance will run [init.sh](data/init.sh) to enable NAT as follows:
 
 ## Configuration
 
-### Allow SSH access
+### User data
 
-You can log in to the NAT instance from [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html).
+You can set additional `write_files` and `runcmd` section. For example,
+
+```tf
+module "nat" {
+  user_data_write_files = [
+    {
+      path : "/opt/nat/run.sh",
+      content : file("./run.sh"),
+      permissions : "0755",
+    },
+  ]
+  user_data_runcmd = [
+    ["/opt/nat/run.sh"],
+  ]
+}
+```
+
+See also the [example](example/) for more.
+
+
+### SSH access
 
 You can enable SSH access by setting `key_name` option and opening the security group. For example,
 
@@ -127,6 +147,8 @@ No requirements.
 | public\_subnet | ID of the public subnet to place the NAT instance | `string` | n/a | yes |
 | tags | Tags applied to resources created with this module | `map` | `{}` | no |
 | use\_spot\_instance | Whether to use spot or on-demand EC2 instance | `bool` | `true` | no |
+| user\_data\_runcmd | Additional runcmd section of cloud-init | `list` | `[]` | no |
+| user\_data\_write\_files | Additional write\_files section of cloud-init | `list` | `[]` | no |
 | vpc\_id | ID of the VPC | `string` | n/a | yes |
 
 ## Outputs

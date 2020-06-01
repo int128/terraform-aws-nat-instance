@@ -1,27 +1,39 @@
 # Example of terraform-aws-nat-instance
 
+This example shows the following things:
+
+- Create a VPC and subnets using `vpc` module.
+- Create a NAT instance using this module.
+- Create an instance in the private subnet.
+- Add custom scripts to the NAT instance.
+  In this example, http port of the private instance will be exposed.
+
+
+## Getting Started
+
 Provision the stack.
 
 ```console
 % terraform init
-
 % terraform apply
 ...
-Plan: 37 to add, 0 to change, 0 to destroy.
 
-Do you want to perform these actions?
-  Terraform will perform the actions described above.
-  Only 'yes' will be accepted to approve.
+Outputs:
 
-  Enter a value: yes
-...
-Apply complete! Resources: 37 added, 0 changed, 0 destroyed.
+nat_public_ip = 54.212.155.23
+private_instance_id = i-07c076946c5142cdd
 ```
 
-Make sure you can access an instance in the private subnet.
+Make sure you have access to the instance in the private subnet.
 
 ```console
-% aws ssm start-session --region us-west-2 --target i-01d945b895167862a
+% aws ssm start-session --region us-west-2 --target i-07c076946c5142cdd
+```
+
+Make sure you can access http port of the NAT instance.
+
+```console
+% curl http://54.212.155.23
 ```
 
 You can completely destroy the stack.

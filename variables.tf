@@ -60,6 +60,18 @@ variable "tags" {
   default     = {}
 }
 
+variable "user_data_write_files" {
+  description = "Additional write_files section of cloud-init"
+  type        = list
+  default     = []
+}
+
+variable "user_data_runcmd" {
+  description = "Additional runcmd section of cloud-init"
+  type        = list
+  default     = []
+}
+
 locals {
   // Generate common tags by merging variables and default Name
   common_tags = merge(

@@ -89,7 +89,7 @@ resource "aws_launch_template" "this" {
     "#cloud-config",
     yamlencode({
       # https://cloudinit.readthedocs.io/en/latest/topics/modules.html
-      write_files : [
+      write_files : concat([
         {
           path : "/opt/nat/runonce.sh",
           content : templatefile("${path.module}/runonce.sh", { eni_id = aws_network_interface.this.id }),
@@ -104,10 +104,10 @@ resource "aws_launch_template" "this" {
           path : "/etc/systemd/system/snat.service",
           content : file("${path.module}/snat.service"),
         },
-      ],
-      runcmd : [
+      ], var.user_data_write_files),
+      runcmd : concat([
         ["/opt/nat/runonce.sh"],
-      ],
+      ], var.user_data_runcmd),
     })
   ]))
 

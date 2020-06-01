@@ -1,0 +1,10 @@
+[Unit]
+Description = DNAT via ENI eth1
+
+[Service]
+ExecStart = /opt/nat/dnat.sh
+Type = simple
+Restart = always
+
+[Install]
+WantedBy = multi-user.target

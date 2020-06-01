@@ -21,68 +21,56 @@ module "nat" {
   public_subnet               = module.vpc.public_subnets[0]
   private_subnets_cidr_blocks = module.vpc.private_subnets_cidr_blocks
   private_route_table_ids     = module.vpc.private_route_table_ids
-}
 
-# instance in the private subnet
-resource "aws_instance" "private_instance" {
-  ami                  = data.aws_ami.amazon_linux_2.id
-  instance_type        = "t3.micro"
-  iam_instance_profile = aws_iam_instance_profile.private_instance.name
-  subnet_id            = module.vpc.private_subnets[0]
-
-  tags = {
-    Name = "Example of terraform-aws-nat-instance"
-  }
-}
-
-# AMI of the latest Amazon Linux 2 
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-  filter {
-    name   = "block-device-mapping.volume-type"
-    values = ["gp2"]
-  }
-}
-
-resource "aws_iam_instance_profile" "private_instance" {
-  role = aws_iam_role.private_instance.name
-}
-
-resource "aws_iam_role" "private_instance" {
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  # enable port forwarding (optional)
+  user_data_write_files = [
     {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
+      path : "/opt/nat/dnat.sh",
+      content : templatefile("./dnat.sh", { ec2_name = "example-terraform-aws-nat-instance" }),
+      permissions : "0755",
+    },
+    {
+      path : "/etc/systemd/system/dnat.service",
+      content : file("./dnat.service"),
+    },
   ]
+  user_data_runcmd = [
+    ["yum", "install", "-y", "jq"],
+    ["systemctl", "enable", "dnat"],
+    ["systemctl", "start", "dnat"],
+  ]
+}
+
+# IAM policy for port forwarding (optional)
+resource "aws_iam_role_policy" "dnat_service" {
+  role   = module.nat.iam_role_name
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances"
+            ],
+            "Resource": "*"
+        }
+    ]
 }
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "ssm" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  role       = aws_iam_role.private_instance.name
+# expose http port of the private instance (optional)
+resource "aws_security_group_rule" "dnat_http" {
+  description       = "expose HTTP service"
+  security_group_id = module.nat.sg_id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 80
+  to_port           = 80
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+output "nat_public_ip" {
+  value = module.nat.eip_public_ip
 }
