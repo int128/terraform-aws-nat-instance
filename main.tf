@@ -20,7 +20,7 @@ resource "aws_security_group_rule" "ingress" {
   cidr_blocks       = var.private_subnets_cidr_blocks
   from_port         = 0
   to_port           = 65535
-  protocol          = "tcp"
+  protocol          = "all"
 }
 
 resource "aws_network_interface" "this" {
