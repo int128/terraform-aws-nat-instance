@@ -14,7 +14,7 @@ resource "aws_security_group_rule" "egress" {
   protocol          = "tcp"
 }
 
-resource "aws_security_group_rule" "ingress" {
+resource "aws_security_group_rule" "ingress_any" {
   security_group_id = aws_security_group.this.id
   type              = "ingress"
   cidr_blocks       = var.private_subnets_cidr_blocks
