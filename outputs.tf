@@ -1,11 +1,11 @@
 output "eip_id" {
   description = "ID of the Elastic IP"
-  value       = var.enabled ? aws_eip.this[0].id : ""
+  value       = var.enabled ? var.eip_creation ? aws_eip.this[0].id : "" : ""
 }
 
 output "eip_public_ip" {
   description = "Public IP of the Elastic IP for the NAT instance"
-  value       = var.enabled ? aws_eip.this[0].public_ip : ""
+  value       = var.enabled ? var.eip_creation ? aws_eip.this[0].public_ip : "" : ""
 }
 
 output "eni_id" {
