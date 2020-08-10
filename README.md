@@ -152,6 +152,7 @@ No requirements.
 | user\_data\_runcmd | Additional runcmd section of cloud-init | `list` | `[]` | no |
 | user\_data\_write\_files | Additional write\_files section of cloud-init | `list` | `[]` | no |
 | vpc\_id | ID of the VPC | `string` | n/a | yes |
+| eip_creation | Whether to create an eip | `bool` | `true` | no | 
 
 ## Outputs
 
