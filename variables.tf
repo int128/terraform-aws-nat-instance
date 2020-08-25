@@ -14,6 +14,12 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "vpc_eip" {
+  description = "Whether the EIP sits in the VPC or not"
+  type        = bool
+  default     = false
+}
+
 variable "public_subnet" {
   description = "ID of the public subnet to place the NAT instance"
   type        = string

@@ -33,6 +33,7 @@ resource "aws_network_interface" "this" {
 
 resource "aws_eip" "this" {
   count             = var.enabled ? 1 : 0
+  vpc               = var.vpc_eip
   network_interface = aws_network_interface.this.id
   tags              = local.common_tags
 }
