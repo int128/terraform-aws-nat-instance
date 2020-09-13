@@ -6,5 +6,4 @@ jobs:
     steps:
       - checkout
       - run: apk add make
-      - run: terraform init
       - run: make check
