@@ -32,7 +32,7 @@ resource "aws_network_interface" "this" {
 }
 
 resource "aws_eip" "this" {
-  count             = var.enabled ? 1 : 0
+  count             = var.enabled ? var.eip_creation ? 1 : 0 : 0
   network_interface = aws_network_interface.this.id
   tags              = local.common_tags
 }
