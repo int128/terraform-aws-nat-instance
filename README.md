@@ -11,7 +11,7 @@ Features:
 - Supporting Systems Manager Session Manager
 - Compatible with workspaces
 
-Terraform 0.12 is required.
+Terraform 0.12 or later is required.
 
 **Warning**: Generally you should use a NAT gateway. This module provides a very low cost solution for testing purpose.
 
