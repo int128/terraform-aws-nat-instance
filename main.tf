@@ -31,12 +31,6 @@ resource "aws_network_interface" "this" {
   tags              = local.common_tags
 }
 
-resource "aws_eip" "this" {
-  count             = var.enabled ? var.eip_creation ? 1 : 0 : 0
-  network_interface = aws_network_interface.this.id
-  tags              = local.common_tags
-}
-
 resource "aws_route" "this" {
   count                  = length(var.private_route_table_ids)
   route_table_id         = var.private_route_table_ids[count.index]

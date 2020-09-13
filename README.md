@@ -41,6 +41,13 @@ module "nat" {
   private_subnets_cidr_blocks = module.vpc.private_subnets_cidr_blocks
   private_route_table_ids     = module.vpc.private_route_table_ids
 }
+
+resource "aws_eip" "nat" {
+  network_interface = module.nat.eni_id
+  tags = {
+    "Name" = "nat-instance-main"
+  }
+}
 ```
 
 Now create an EC2 instance in the private subnet to verify the NAT configuration.
@@ -55,11 +62,12 @@ This module provisions the following resources:
 
 - Auto Scaling Group with mixed instances policy
 - Launch Template
-- Elastic IP
 - Elastic Network Interface
 - Security Group
 - IAM Role for SSM and ENI attachment
 - VPC Route (optional)
+
+You need to attach your elastic IP to the ENI.
 
 Take a look at the diagram:
 
@@ -119,6 +127,24 @@ resource "aws_security_group_rule" "nat_ssh" {
 ```
 
 
+## Migration guide
+
+### Upgrade to v2 from v1
+
+This module no longer creates an EIP since v2.
+
+To keep your EIP when you migrate to module v2, rename the EIP in the state as follows:
+
+```console
+% terraform state mv -dry-run module.nat.aws_eip.this aws_eip.nat
+Would move "module.nat.aws_eip.this" to "aws_eip.nat"
+
+% terraform state mv module.nat.aws_eip.this aws_eip.nat
+Move "module.nat.aws_eip.this" to "aws_eip.nat"
+Successfully moved 1 object(s).
+```
+
+
 ## Contributions
 
 This is an open source software. Feel free to open issues and pull requests.
@@ -152,14 +178,11 @@ No requirements.
 | user\_data\_runcmd | Additional runcmd section of cloud-init | `list` | `[]` | no |
 | user\_data\_write\_files | Additional write\_files section of cloud-init | `list` | `[]` | no |
 | vpc\_id | ID of the VPC | `string` | n/a | yes |
-| eip_creation | Whether to create an eip | `bool` | `true` | no | 
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| eip\_id | ID of the Elastic IP |
-| eip\_public\_ip | Public IP of the Elastic IP for the NAT instance |
 | eni\_id | ID of the ENI for the NAT instance |
 | eni\_private\_ip | Private IP of the ENI for the NAT instance |
 | iam\_role\_name | Name of the IAM role for the NAT instance |

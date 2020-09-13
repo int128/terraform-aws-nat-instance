@@ -41,6 +41,13 @@ module "nat" {
   ]
 }
 
+resource "aws_eip" "nat" {
+  network_interface = module.nat.eni_id
+  tags = {
+    "Name" = "nat-instance-example"
+  }
+}
+
 # IAM policy for port forwarding (optional)
 resource "aws_iam_role_policy" "dnat_service" {
   role   = module.nat.iam_role_name
@@ -72,5 +79,5 @@ resource "aws_security_group_rule" "dnat_http" {
 }
 
 output "nat_public_ip" {
-  value = module.nat.eip_public_ip
+  value = aws_eip.nat.public_ip
 }
