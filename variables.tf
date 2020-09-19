@@ -71,11 +71,6 @@ variable "user_data_runcmd" {
   type        = list
   default     = []
 }
-variable "eip_creation" {
-  description = "Whether to create an elastic ip"
-  type        = bool
-  default     = true
-}
 
 locals {
   // Generate common tags by merging variables and default Name
