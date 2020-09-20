@@ -73,9 +73,12 @@ variable "user_data_runcmd" {
 }
 
 locals {
-  // Generate common tags by merging variables and default Name
+  // Merge the default tags and user-specified tags.
+  // User-specified tags take precedence over the default.
   common_tags = merge(
-    var.tags, {
+    {
       Name = "nat-instance-${var.name}"
-  })
+    },
+    var.tags,
+  )
 }
