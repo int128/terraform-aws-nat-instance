@@ -175,6 +175,8 @@ resource "aws_iam_role" "this" {
   ]
 }
 EOF
+
+  tags = local.common_tags
 }
 
 resource "aws_iam_role_policy_attachment" "ssm" {
