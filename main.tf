@@ -79,6 +79,11 @@ resource "aws_launch_template" "this" {
     delete_on_termination       = true
   }
 
+  tag_specifications {
+    resource_type = "instance"
+    tags          = local.common_tags
+  }
+
   user_data = base64encode(join("\n", [
     "#cloud-config",
     yamlencode({
@@ -106,9 +111,7 @@ resource "aws_launch_template" "this" {
   ]))
 
   description = "Launch template for NAT instance ${var.name}"
-  tags = {
-    Name = "nat-instance-${var.name}"
-  }
+  tags        = local.common_tags
 }
 
 resource "aws_autoscaling_group" "this" {
@@ -137,21 +140,13 @@ resource "aws_autoscaling_group" "this" {
     }
   }
 
-  // Generate asg tags from default tag list
   dynamic "tag" {
-    for_each = var.tags
+    for_each = local.common_tags
     content {
       key                 = tag.key
       value               = tag.value
-      propagate_at_launch = true
+      propagate_at_launch = false
     }
-  }
-
-  // Tag for name
-  tag {
-    key                 = "Name"
-    value               = "nat-instance-${var.name}"
-    propagate_at_launch = true
   }
 
   lifecycle {
