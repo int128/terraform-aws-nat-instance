@@ -1,9 +1,0 @@
-version: "2"
-jobs:
-  build:
-    docker:
-      - image: hashicorp/terraform:0.13.5
-    steps:
-      - checkout
-      - run: apk add make
-      - run: make check

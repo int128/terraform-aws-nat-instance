@@ -21,12 +21,12 @@ variable "public_subnet" {
 
 variable "private_subnets_cidr_blocks" {
   description = "List of CIDR blocks of the private subnets. The NAT instance accepts connections from this subnets"
-  type        = list
+  type        = list(string)
 }
 
 variable "private_route_table_ids" {
   description = "List of ID of the route tables for the private subnets. You can set this to assign the each default route to the NAT instance"
-  type        = list
+  type        = list(string)
   default     = []
 }
 
@@ -38,7 +38,7 @@ variable "image_id" {
 
 variable "instance_types" {
   description = "Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy"
-  type        = list
+  type        = list(string)
   default     = ["t3.nano", "t3a.nano"]
 }
 
@@ -56,19 +56,19 @@ variable "key_name" {
 
 variable "tags" {
   description = "Tags applied to resources created with this module"
-  type        = map
+  type        = map(string)
   default     = {}
 }
 
 variable "user_data_write_files" {
   description = "Additional write_files section of cloud-init"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
 variable "user_data_runcmd" {
   description = "Additional runcmd section of cloud-init"
-  type        = list
+  type        = list(list(string))
   default     = []
 }
 
