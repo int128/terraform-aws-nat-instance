@@ -3,7 +3,7 @@ name: terraform
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     paths:
       - .github/workflows/terraform.yaml
