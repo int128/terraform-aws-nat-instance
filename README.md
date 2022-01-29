@@ -151,9 +151,6 @@ This is an open source software. Feel free to open issues and pull requests.
 
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
 
 ## Providers
 
