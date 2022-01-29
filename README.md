@@ -150,7 +150,7 @@ Successfully moved 1 object(s).
 This is an open source software. Feel free to open issues and pull requests.
 
 
-<!--terraform-docs-->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -188,3 +188,4 @@ No requirements.
 | iam\_role\_name | Name of the IAM role for the NAT instance |
 | sg\_id | ID of the security group of the NAT instance |
 
+<!-- END_TF_DOCS -->
