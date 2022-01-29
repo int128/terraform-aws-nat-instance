@@ -29,4 +29,4 @@ jobs:
       - uses: terraform-docs/gh-actions@v0.11.0
         with:
           output-file: README.md
-          git-push: true
+          git-push: 'true'
