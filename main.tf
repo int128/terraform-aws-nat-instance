@@ -180,7 +180,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "ssm" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  policy_arn = var.ssm_policy_arn
   role       = aws_iam_role.this.name
 }
 
