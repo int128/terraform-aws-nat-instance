@@ -157,6 +157,8 @@ resource "aws_autoscaling_group" "this" {
 resource "aws_iam_instance_profile" "this" {
   name_prefix = var.name
   role        = aws_iam_role.this.name
+
+  tags = local.common_tags
 }
 
 resource "aws_iam_role" "this" {
