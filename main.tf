@@ -73,6 +73,11 @@ resource "aws_launch_template" "this" {
     arn = aws_iam_instance_profile.this.arn
   }
 
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
   network_interfaces {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.this.id]
