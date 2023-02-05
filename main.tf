@@ -10,8 +10,8 @@ resource "aws_security_group_rule" "egress" {
   type              = "egress"
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
+  to_port           = 0
+  protocol          = "-1"
 }
 
 resource "aws_security_group_rule" "ingress_any" {
@@ -19,8 +19,8 @@ resource "aws_security_group_rule" "ingress_any" {
   type              = "ingress"
   cidr_blocks       = var.private_subnets_cidr_blocks
   from_port         = 0
-  to_port           = 65535
-  protocol          = "all"
+  to_port           = 0
+  protocol          = "-1"
 }
 
 resource "aws_network_interface" "this" {
