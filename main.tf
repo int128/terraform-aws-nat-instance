@@ -73,6 +73,11 @@ resource "aws_launch_template" "this" {
     arn = aws_iam_instance_profile.this.arn
   }
 
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
   network_interfaces {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.this.id]
@@ -157,6 +162,8 @@ resource "aws_autoscaling_group" "this" {
 resource "aws_iam_instance_profile" "this" {
   name_prefix = var.name
   role        = aws_iam_role.this.name
+
+  tags = local.common_tags
 }
 
 resource "aws_iam_role" "this" {
