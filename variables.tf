@@ -82,3 +82,9 @@ locals {
     var.tags,
   )
 }
+
+variable "ssm_policy_arn" {
+  description = "SSM Policy to be attached to instance profile"
+  type        = string
+  default     = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
