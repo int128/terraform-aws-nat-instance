@@ -18,3 +18,8 @@ output "iam_role_name" {
   description = "Name of the IAM role for the NAT instance"
   value       = aws_iam_role.this.name
 }
+
+output "autoscaling_group_arm" {
+  description = "ASG ARN"
+  value       = aws_autoscaling_group.this.arn
+}
