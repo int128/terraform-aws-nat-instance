@@ -44,7 +44,7 @@ data "aws_ami" "this" {
   owners      = ["amazon"]
   filter {
     name   = "architecture"
-    values = ["x86_64"]
+    values = var.architecture
   }
   filter {
     name   = "root-device-type"
@@ -191,21 +191,3 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   role       = aws_iam_role.this.name
 }
 
-resource "aws_iam_role_policy" "eni" {
-  role        = aws_iam_role.this.name
-  name_prefix = var.name
-  policy      = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:AttachNetworkInterface"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
-}
