@@ -1,3 +1,7 @@
+data "aws_network_interface" "this" {
+  id = aws_network_interface.this.id
+}
+
 resource "aws_security_group" "this" {
   name_prefix = var.name
   vpc_id      = var.vpc_id
@@ -123,7 +127,7 @@ resource "aws_autoscaling_group" "this" {
   desired_capacity    = var.enabled ? 1 : 0
   min_size            = var.enabled ? 1 : 0
   max_size            = 1
-  vpc_zone_identifier = [var.public_subnet]
+  availability_zones = [data.aws_network_interface.this.availability_zone]
 
   mixed_instances_policy {
     instances_distribution {
