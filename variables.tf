@@ -42,10 +42,16 @@ variable "instance_types" {
   default     = ["t4g.nano", "t3a.nano"]
 }
 
+variable "architecture" {
+  description = "Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy"
+  type        = list(string)
+  default     = ["arm64"]
+}
+
 variable "use_spot_instance" {
   description = "Whether to use spot or on-demand EC2 instance"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "key_name" {
