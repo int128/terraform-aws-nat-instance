@@ -39,7 +39,7 @@ variable "image_id" {
 variable "instance_types" {
   description = "Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy"
   type        = list(string)
-  default     = ["t4g.nano", "t3a.nano"]
+  default     = ["t4g.nano"]
 }
 
 variable "architecture" {
