@@ -1,5 +1,7 @@
 [Unit]
-Description = SNAT via ENI eth1
+Description = Configure this machine to act as a NAT instance.
+Wants = network-online.target
+After = network-online.target
 
 [Service]
 ExecStart = /opt/nat/snat.sh

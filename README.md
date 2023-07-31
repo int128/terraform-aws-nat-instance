@@ -144,6 +144,14 @@ Move "module.nat.aws_eip.this" to "aws_eip.nat"
 Successfully moved 1 object(s).
 ```
 
+## Changes for latest version 3.0.0
+
+Default is on-demand and not a spot instance. Also instance type is default t4g.nano to change this you need to add
+
+
+instance_types = ["t3.nano"]
+
+architecture = ["x86_64"]
 
 ## Contributions
 
@@ -186,22 +194,22 @@ No modules.
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_enabled"></a> [enabled](#input\_enabled) | Enable or not costly resources | `bool` | `true` | no |
-| <a name="input_image_id"></a> [image\_id](#input\_image\_id) | AMI of the NAT instance. Default to the latest Amazon Linux 2 | `string` | `""` | no |
-| <a name="input_instance_types"></a> [instance\_types](#input\_instance\_types) | Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy | `list(string)` | <pre>[<br>  "t3.nano",<br>  "t3a.nano"<br>]</pre> | no |
-| <a name="input_key_name"></a> [key\_name](#input\_key\_name) | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance | `string` | `""` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name for all the resources as identifier | `string` | n/a | yes |
-| <a name="input_private_route_table_ids"></a> [private\_route\_table\_ids](#input\_private\_route\_table\_ids) | List of ID of the route tables for the private subnets. You can set this to assign the each default route to the NAT instance | `list(string)` | `[]` | no |
-| <a name="input_private_subnets_cidr_blocks"></a> [private\_subnets\_cidr\_blocks](#input\_private\_subnets\_cidr\_blocks) | List of CIDR blocks of the private subnets. The NAT instance accepts connections from this subnets | `list(string)` | n/a | yes |
-| <a name="input_public_subnet"></a> [public\_subnet](#input\_public\_subnet) | ID of the public subnet to place the NAT instance | `string` | n/a | yes |
-| <a name="input_ssm_policy_arn"></a> [ssm\_policy\_arn](#input\_ssm\_policy\_arn) | SSM Policy to be attached to instance profile | `string` | `"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags applied to resources created with this module | `map(string)` | `{}` | no |
-| <a name="input_use_spot_instance"></a> [use\_spot\_instance](#input\_use\_spot\_instance) | Whether to use spot or on-demand EC2 instance | `bool` | `true` | no |
-| <a name="input_user_data_runcmd"></a> [user\_data\_runcmd](#input\_user\_data\_runcmd) | Additional runcmd section of cloud-init | `list(list(string))` | `[]` | no |
-| <a name="input_user_data_write_files"></a> [user\_data\_write\_files](#input\_user\_data\_write\_files) | Additional write\_files section of cloud-init | `list(any)` | `[]` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC | `string` | n/a | yes |
+| Name | Description                                                                                                                   | Type | Default                                                  | Required |
+|------|-------------------------------------------------------------------------------------------------------------------------------|------|----------------------------------------------------------|:--------:|
+| <a name="input_enabled"></a> [enabled](#input\_enabled) | This variable is for enabling auto scaling desired capacity and minimum size in the auto scaling group.                       | `bool` | `true`                                                   | no |
+| <a name="input_image_id"></a> [image\_id](#input\_image\_id) | AMI of the NAT instance. Default to the latest Amazon Linux 2                                                                 | `string` | `""`                                                     | no |
+| <a name="input_instance_types"></a> [instance\_types](#input\_instance\_types) | Candidates of spot instance type for the NAT instance. This is used in the mixed instances policy                             | `list(string)` | <pre>[<br>  "t3.nano",<br>  "t3a.nano"<br>]</pre>        | no |
+| <a name="input_key_name"></a> [key\_name](#input\_key\_name) | Name of the key pair for the NAT instance. You can set this to assign the key pair to the NAT instance                        | `string` | `""`                                                     | no |
+| <a name="input_name"></a> [name](#input\_name) | Name for all the resources as identifier                                                                                      | `string` | n/a                                                      | yes |
+| <a name="input_private_route_table_ids"></a> [private\_route\_table\_ids](#input\_private\_route\_table\_ids) | List of ID of the route tables for the private subnets. You can set this to assign the each default route to the NAT instance | `list(string)` | `[]`                                                     | no |
+| <a name="input_private_subnets_cidr_blocks"></a> [private\_subnets\_cidr\_blocks](#input\_private\_subnets\_cidr\_blocks) | List of CIDR blocks of the private subnets. The NAT instance accepts connections from this subnets                            | `list(string)` | n/a                                                      | yes |
+| <a name="input_public_subnet"></a> [public\_subnet](#input\_public\_subnet) | ID of the public subnet to place the NAT instance                                                                             | `string` | n/a                                                      | yes |
+| <a name="input_ssm_policy_arn"></a> [ssm\_policy\_arn](#input\_ssm\_policy\_arn) | SSM Policy to be attached to instance profile                                                                                 | `string` | `"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags applied to resources created with this module                                                                            | `map(string)` | `{}`                                                     | no |
+| <a name="input_use_spot_instance"></a> [use\_spot\_instance](#input\_use\_spot\_instance) | Whether to use spot or on-demand EC2 instance                                                                                 | `bool` | `false`                                                  | no |
+| <a name="input_user_data_runcmd"></a> [user\_data\_runcmd](#input\_user\_data\_runcmd) | Additional runcmd section of cloud-init                                                                                       | `list(list(string))` | `[]`                                                     | no |
+| <a name="input_user_data_write_files"></a> [user\_data\_write\_files](#input\_user\_data\_write\_files) | Additional write\_files section of cloud-init                                                                                 | `list(any)` | `[]`                                                     | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC                                                                                                                 | `string` | n/a                                                      | yes |
 
 ## Outputs
 
