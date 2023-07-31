@@ -1,3 +1,7 @@
+data "aws_network_interface" "this" {
+  id = aws_network_interface.this.id
+}
+
 resource "aws_security_group" "this" {
   name_prefix = var.name
   vpc_id      = var.vpc_id
@@ -10,8 +14,8 @@ resource "aws_security_group_rule" "egress" {
   type              = "egress"
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
+  to_port           = 0
+  protocol          = "-1"
 }
 
 resource "aws_security_group_rule" "ingress_any" {
@@ -19,8 +23,8 @@ resource "aws_security_group_rule" "ingress_any" {
   type              = "ingress"
   cidr_blocks       = var.private_subnets_cidr_blocks
   from_port         = 0
-  to_port           = 65535
-  protocol          = "all"
+  to_port           = 0
+  protocol          = "-1"
 }
 
 resource "aws_network_interface" "this" {
@@ -44,7 +48,7 @@ data "aws_ami" "this" {
   owners      = ["amazon"]
   filter {
     name   = "architecture"
-    values = ["x86_64"]
+    values = var.architecture
   }
   filter {
     name   = "root-device-type"
@@ -52,7 +56,7 @@ data "aws_ami" "this" {
   }
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*"]
+    values = ["al2023-ami-minimal*"]
   }
   filter {
     name   = "virtualization-type"
@@ -60,7 +64,7 @@ data "aws_ami" "this" {
   }
   filter {
     name   = "block-device-mapping.volume-type"
-    values = ["gp2"]
+    values = ["gp3"]
   }
 }
 
@@ -79,9 +83,8 @@ resource "aws_launch_template" "this" {
   }
 
   network_interfaces {
-    associate_public_ip_address = true
-    security_groups             = [aws_security_group.this.id]
-    delete_on_termination       = true
+    device_index = 0
+    network_interface_id = aws_network_interface.this.id
   }
 
   tag_specifications {
@@ -124,7 +127,7 @@ resource "aws_autoscaling_group" "this" {
   desired_capacity    = var.enabled ? 1 : 0
   min_size            = var.enabled ? 1 : 0
   max_size            = 1
-  vpc_zone_identifier = [var.public_subnet]
+  availability_zones = [data.aws_network_interface.this.availability_zone]
 
   mixed_instances_policy {
     instances_distribution {
@@ -191,21 +194,3 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   role       = aws_iam_role.this.name
 }
 
-resource "aws_iam_role_policy" "eni" {
-  role        = aws_iam_role.this.name
-  name_prefix = var.name
-  policy      = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:AttachNetworkInterface"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
-}
