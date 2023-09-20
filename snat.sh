@@ -2,9 +2,14 @@
 set -x
 
 # wait for eth1
-while ! ip link show dev eth1; do
+end_time=$((SECONDS + 180))
+while [ $SECONDS -lt $end_time ] && ! ip link show dev eth1; do
   sleep 1
 done
+
+if ! ip link show dev eth1; then
+  exit 1
+fi
 
 # enable IP forwarding and NAT
 sysctl -q -w net.ipv4.ip_forward=1
