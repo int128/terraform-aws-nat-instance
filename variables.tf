@@ -72,6 +72,16 @@ variable "user_data_runcmd" {
   default     = []
 }
 
+variable "egress_protocol" {
+  description = "Protocol allowed to egress out of the NAT instance"
+  type        = string
+  default     = "tcp"
+  validation {
+    condition     = var.egress_protocol == "tcp" || var.egress_protocol == "udp" || var.egress_protocol == "all"
+    error_message = "The egress_protocol must be one of 'tcp', 'udp' or 'all'."
+  }
+}
+
 locals {
   // Merge the default tags and user-specified tags.
   // User-specified tags take precedence over the default.
