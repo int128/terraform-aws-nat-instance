@@ -65,9 +65,10 @@ data "aws_ami" "this" {
 }
 
 resource "aws_launch_template" "this" {
-  name_prefix = var.name
-  image_id    = var.image_id != "" ? var.image_id : data.aws_ami.this.id
-  key_name    = var.key_name
+  name_prefix            = var.name
+  image_id               = var.image_id != "" ? var.image_id : data.aws_ami.this.id
+  key_name               = var.key_name
+  update_default_version = true
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.this.arn
